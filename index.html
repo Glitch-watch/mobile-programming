@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Expense Tracker & Bill Scanner</title>
+    <title>ExpenseSnap | Smart Expense Tracking & OCR Scanner</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
         body {
-            color: #333;
-            background-color: #f9fbfd;
+            background-color: #FFE2AF;
+            color: #007979;
             line-height: 1.6;
         }
 
@@ -22,15 +22,25 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.5rem 10%;
-            background-color: #ffffff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 1.5rem 8%;
+            background-color: #007979;
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #FFE2AF;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-btn {
+            background-color: #E37434;
+            color: #ffffff;
+            padding: 0.75rem 1.8rem;
+            border-radius: 30px;
+            text-decoration: none;
             font-weight: 700;
-            color: #2563eb;
+            box-shadow: 0 4px 12px rgba(227, 116, 52, 0.3);
         }
 
         .hero {
@@ -38,75 +48,100 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
-            padding: 5rem 10% 3rem;
+            padding: 6rem 8% 5rem;
+            background: linear-gradient(180deg, #007979 0%, #24B1B1 100%);
+            color: #ffffff;
         }
 
         .hero h1 {
-            font-size: 2.8rem;
-            color: #1e293b;
-            margin-bottom: 1.2rem;
-            max-width: 800px;
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            max-width: 850px;
         }
 
         .hero p {
-            font-size: 1.2rem;
-            color: #64748b;
-            margin-bottom: 2rem;
+            font-size: 1.25rem;
+            color: #FFE2AF;
+            margin-bottom: 2.5rem;
             max-width: 650px;
         }
 
-        .btn-primary {
-            background-color: #2563eb;
+        .cta-btn {
+            background-color: #E37434;
             color: #ffffff;
-            padding: 0.8rem 2rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 30px;
             text-decoration: none;
-        }
-
-        .btn-primary:hover {
-            background-color: #1d4ed8;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
 
         .features {
-            padding: 4rem 10%;
-            background-color: #ffffff;
+            padding: 5rem 8%;
+            background-color: #FFE2AF;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            color: #007979;
+            margin-bottom: 3rem;
+            font-weight: 800;
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 2rem;
-            margin-top: 2rem;
         }
 
         .feature-card {
-            background-color: #f8fafc;
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
+            background-color: #ffffff;
+            padding: 2.5rem 2rem;
+            border-radius: 16px;
+            border-left: 6px solid #24B1B1;
+            box-shadow: 0 10px 25px rgba(0, 121, 121, 0.08);
         }
 
         .feature-card h3 {
-            font-size: 1.25rem;
-            color: #0f172a;
-            margin-bottom: 0.75rem;
+            font-size: 1.3rem;
+            color: #007979;
+            margin-bottom: 1rem;
+            font-weight: 700;
         }
 
         .feature-card p {
-            color: #64748b;
-            font-size: 0.95rem;
+            color: #4a5568;
+            font-size: 1rem;
+        }
+
+        .banner {
+            background-color: #007979;
+            color: #FFE2AF;
+            text-align: center;
+            padding: 4rem 8%;
+        }
+
+        .banner h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .banner p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: #ffffff;
         }
 
         .footer {
+            background-color: #005a5a;
+            color: #FFE2AF;
             text-align: center;
             padding: 2rem;
-            color: #94a3b8;
             font-size: 0.9rem;
-            border-top: 1px solid #e2e8f0;
         }
     </style>
 </head>
@@ -114,34 +149,41 @@
 
     <nav class="navbar">
         <div class="logo">ExpenseSnap</div>
-        <a href="#download" class="btn-primary">Get Started</a>
+        <a href="#download" class="nav-btn">Get App</a>
     </nav>
 
     <section class="hero">
-        <h1>Effortless Expense Tracking with Automated Receipt Scanning</h1>
-        <p>Stop wasting time manually logging transactions or losing track of receipts. Snap a photo of any bill, and let smart OCR technology handle the rest.</p>
-        <a href="#download" class="btn-primary">Start Tracking Free</a>
+        <h1>Effortless Expense Tracking with Automated Receipt Scanning[cite: 1]</h1>
+        <p>Stop losing track of physical receipts or manually entering data[cite: 1]. Snap a photo of your bill, and let OCR technology record key spending details in seconds[cite: 1].</p>
+        <a href="#download" class="cta-btn">Start Tracking Free</a>
     </section>
 
     <section class="features">
+        <div class="section-title">Designed for Seamless Budgeting</div>
         <div class="features-grid">
             <div class="feature-card">
-                <h3>Instant Bill Capture</h3>
-                <p>Photograph any physical receipt to automatically extract the amount, vendor, date, and category in seconds.</p>
+                <h3>Automated Receipt OCR</h3>
+                <p>Capture physical receipts via camera to extract amounts, dates, vendors, and categories automatically[cite: 1].</p>
             </div>
             <div class="feature-card">
-                <h3>Flexible Manual Logging</h3>
-                <p>Enjoy full control with easy manual input options for cash payments or custom details anytime.</p>
+                <h3>Flexible Entry Control</h3>
+                <p>Log cash spending manually or review and correct extracted scan details anytime for total precision[cite: 1].</p>
             </div>
             <div class="feature-card">
-                <h3>Visual Insights & Budgets</h3>
-                <p>Analyze daily, weekly, and monthly spending trends with intuitive charts and custom category budget limits.</p>
+                <h3>Visual Spending Insights</h3>
+                <p>Monitor financial habits with daily, weekly, and monthly chart reports and custom category budget limits[cite: 1].</p>
             </div>
             <div class="feature-card">
-                <h3>Digital Receipt Archive</h3>
-                <p>Keep scanned bill images neatly attached to your transaction records for quick reference and tax time.</p>
+                <h3>Digital Receipt Vault</h3>
+                <p>Store scanned receipt photos alongside transaction histories to prevent lost records and ease future reference[cite: 1].</p>
             </div>
         </div>
+    </section>
+
+    <section class="banner">
+        <h2>Take Control of Your Personal Finances</h2>
+        <p>Combining complete manual flexibility with instant automated receipt capture in one sleek platform[cite: 1].</p>
+        <a href="#download" class="cta-btn">Download Now</a>
     </section>
 
     <footer class="footer">
