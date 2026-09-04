@@ -1,194 +1,503 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExpenseSnap | Smart Expense Tracking & OCR Scanner</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snaptally — Track every rupee without typing every rupee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F7F5F0;
+    --paper-raised:#FFFFFF;
+    --ink:#1C2321;
+    --ink-soft:#4A5049;
+    --fade:#8A8377;
+    --line:#DCD7C9;
+    --stamp:#C9502A;
+    --stamp-dark:#A33F1E;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
 
-        body {
-            background-color: #FFE2AF;
-            color: #007979;
-            line-height: 1.6;
-        }
+  .wrap{max-width:1120px;margin:0 auto;padding:0 32px;}
 
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 8%;
-            background-color: #007979;
-        }
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(247,245,240,0.9);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:20px 32px;
+    max-width:1120px;margin:0 auto;
+  }
+  .logo{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:1.3rem;
+    letter-spacing:-0.01em;
+    display:flex;align-items:center;gap:8px;
+  }
+  .logo span{color:var(--stamp);}
+  .nav-links{display:flex;gap:36px;font-size:0.95rem;color:var(--ink-soft);}
+  .nav-links a{text-decoration:none;transition:color .15s;}
+  .nav-links a:hover{color:var(--ink);}
+  .nav-cta{
+    font-size:0.9rem;font-weight:600;
+    padding:10px 20px;
+    border:1px solid var(--ink);
+    border-radius:2px;
+    text-decoration:none;
+    transition:background .15s, color .15s;
+  }
+  .nav-cta:hover{background:var(--ink);color:var(--paper);}
+  .nav-mobile-links{display:none;}
 
-        .logo {
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: #FFE2AF;
-            letter-spacing: 0.5px;
-        }
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:88px 32px 100px;
+    max-width:1120px;margin:0 auto;
+    display:grid;
+    grid-template-columns:1.05fr 0.85fr;
+    gap:64px;
+    align-items:center;
+  }
+  .hero-copy h1{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:clamp(2.4rem, 4.4vw, 3.6rem);
+    line-height:1.06;
+    letter-spacing:-0.01em;
+    max-width:12ch;
+  }
+  .hero-copy .lede{
+    margin-top:24px;
+    font-size:1.13rem;
+    color:var(--ink-soft);
+    max-width:42ch;
+  }
+  .hero-actions{
+    margin-top:36px;
+    display:flex;
+    gap:16px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .btn-primary{
+    background:var(--ink);
+    color:var(--paper);
+    font-weight:600;
+    font-size:0.98rem;
+    padding:14px 26px;
+    border-radius:2px;
+    text-decoration:none;
+    display:inline-block;
+    transition:transform .15s ease, background .15s;
+  }
+  .btn-primary:hover{background:var(--stamp-dark);transform:translateY(-1px);}
+  .btn-secondary{
+    font-size:0.95rem;
+    color:var(--ink-soft);
+    text-decoration:none;
+    border-bottom:1px solid var(--fade);
+    padding-bottom:2px;
+    transition:color .15s, border-color .15s;
+  }
+  .btn-secondary:hover{color:var(--ink);border-color:var(--ink);}
+  .hero-note{
+    margin-top:28px;
+    font-size:0.85rem;
+    color:var(--fade);
+  }
 
-        .nav-btn {
-            background-color: #E37434;
-            color: #ffffff;
-            padding: 0.75rem 1.8rem;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 700;
-            box-shadow: 0 4px 12px rgba(227, 116, 52, 0.3);
-        }
+  /* ---------- Receipt visual ---------- */
+  .receipt-stage{
+    display:flex;
+    justify-content:center;
+    perspective:1200px;
+  }
+  .receipt{
+    background:var(--paper-raised);
+    width:290px;
+    padding:28px 24px 34px;
+    box-shadow:0 30px 60px -20px rgba(28,35,33,0.28), 0 4px 10px rgba(28,35,33,0.06);
+    transform:rotate(3.5deg);
+    position:relative;
+    font-family:'IBM Plex Mono',monospace;
+    clip-path:polygon(
+      0% 1%, 4% 0%, 8% 2%, 12% 0%, 16% 2%, 20% 0%, 24% 2%, 28% 0%, 32% 2%, 36% 0%,
+      40% 2%, 44% 0%, 48% 2%, 52% 0%, 56% 2%, 60% 0%, 64% 2%, 68% 0%, 72% 2%, 76% 0%,
+      80% 2%, 84% 0%, 88% 2%, 92% 0%, 96% 2%, 100% 0%,
+      100% 100%, 0% 100%
+    );
+  }
+  .receipt::before{
+    content:"";
+    position:absolute;
+    left:26px;right:26px;top:130px;
+    border-top:1px dashed var(--line);
+  }
+  .r-store{
+    font-family:'Fraunces',serif;
+    font-size:1.05rem;
+    font-weight:600;
+    text-align:center;
+    color:var(--ink);
+  }
+  .r-sub{
+    text-align:center;
+    font-size:0.68rem;
+    color:var(--fade);
+    margin-top:4px;
+    letter-spacing:0.02em;
+  }
+  .r-meta{
+    text-align:center;
+    font-size:0.68rem;
+    color:var(--fade);
+    margin-top:14px;
+  }
+  .r-items{margin-top:20px;font-size:0.78rem;}
+  .r-item{
+    display:flex;justify-content:space-between;
+    padding:6px 0;
+    color:var(--ink-soft);
+  }
+  .r-item span:last-child{color:var(--ink);}
+  .r-total{
+    display:flex;justify-content:space-between;
+    margin-top:14px;padding-top:14px;
+    border-top:1px solid var(--ink);
+    font-size:0.92rem;font-weight:600;
+    color:var(--ink);
+  }
+  .r-badge{
+    position:absolute;
+    right:-14px;top:44px;
+    background:var(--stamp);
+    color:#fff;
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:0.62rem;
+    letter-spacing:0.06em;
+    padding:6px 10px;
+    border-radius:2px;
+    transform:rotate(8deg);
+    box-shadow:0 6px 14px rgba(201,80,42,0.35);
+  }
 
-        .hero {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 6rem 8% 5rem;
-            background: linear-gradient(180deg, #007979 0%, #24B1B1 100%);
-            color: #ffffff;
-        }
+  /* ---------- Section shared ---------- */
+  section{padding:96px 0;}
+  .section-head{max-width:56ch;margin-bottom:56px;}
+  .kicker{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.78rem;
+    color:var(--stamp);
+    margin-bottom:14px;
+  }
+  h2{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:clamp(1.7rem, 3vw, 2.3rem);
+    letter-spacing:-0.01em;
+  }
+  .section-head p{
+    margin-top:16px;
+    color:var(--ink-soft);
+    font-size:1.05rem;
+  }
 
-        .hero h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 1.5rem;
-            max-width: 850px;
-        }
+  /* ---------- How it works ---------- */
+  .how{border-top:1px solid var(--line);}
+  .how-list{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    border-top:1px solid var(--line);
+  }
+  .how-item{
+    padding:36px 40px 36px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .how-item:nth-child(odd){border-right:1px solid var(--line);padding-right:40px;}
+  .how-item:nth-child(even){padding-left:40px;}
+  .how-num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.85rem;
+    color:var(--fade);
+  }
+  .how-item h3{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:1.28rem;
+    margin-top:10px;
+  }
+  .how-item p{
+    margin-top:10px;
+    color:var(--ink-soft);
+    font-size:0.98rem;
+    max-width:38ch;
+  }
 
-        .hero p {
-            font-size: 1.25rem;
-            color: #FFE2AF;
-            margin-bottom: 2.5rem;
-            max-width: 650px;
-        }
+  /* ---------- Features ---------- */
+  .features{background:var(--paper-raised);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .feature-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:0;
+  }
+  .feature{
+    padding:32px 28px;
+    border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .feature:nth-child(3n){border-right:none;}
+  .feature h4{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:1.08rem;
+  }
+  .feature p{
+    margin-top:8px;
+    font-size:0.92rem;
+    color:var(--ink-soft);
+  }
+  .feature-mark{
+    font-family:'IBM Plex Mono',monospace;
+    color:var(--stamp);
+    font-size:0.85rem;
+  }
 
-        .cta-btn {
-            background-color: #E37434;
-            color: #ffffff;
-            padding: 1rem 2.5rem;
-            font-size: 1.1rem;
-            font-weight: 700;
-            border-radius: 30px;
-            text-decoration: none;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-        }
+  /* ---------- Ledger stat strip ---------- */
+  .ledger{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:24px;
+    padding-top:20px;
+  }
+  .ledger-stat .num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:2.1rem;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .ledger-stat .lbl{
+    margin-top:6px;
+    font-size:0.85rem;
+    color:var(--fade);
+  }
 
-        .features {
-            padding: 5rem 8%;
-            background-color: #FFE2AF;
-        }
+  /* ---------- CTA band ---------- */
+  .cta-band{
+    text-align:center;
+    padding:110px 32px;
+  }
+  .cta-band h2{max-width:18ch;margin:0 auto;}
+  .cta-band p{
+    margin:18px auto 0;
+    max-width:42ch;
+    color:var(--ink-soft);
+    font-size:1.05rem;
+  }
+  .cta-band .hero-actions{justify-content:center;margin-top:32px;}
 
-        .section-title {
-            text-align: center;
-            font-size: 2.2rem;
-            color: #007979;
-            margin-bottom: 3rem;
-            font-weight: 800;
-        }
+  /* ---------- Footer ---------- */
+  footer{
+    border-top:1px solid var(--line);
+    padding:36px 32px;
+  }
+  .footer-inner{
+    max-width:1120px;margin:0 auto;
+    display:flex;justify-content:space-between;align-items:center;
+    flex-wrap:wrap;gap:16px;
+    font-size:0.85rem;color:var(--fade);
+  }
+  .footer-inner a{text-decoration:none;color:var(--fade);}
+  .footer-inner a:hover{color:var(--ink);}
 
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 2rem;
-        }
+  @media (max-width:860px){
+    .hero{grid-template-columns:1fr;gap:56px;padding-top:56px;}
+    .receipt-stage{order:-1;}
+    .receipt{transform:rotate(2deg);}
+    .nav-links{display:none;}
+    .how-list{grid-template-columns:1fr;}
+    .how-item, .how-item:nth-child(odd), .how-item:nth-child(even){
+      border-right:none;padding:28px 0;
+    }
+    .feature-grid{grid-template-columns:1fr;}
+    .feature{border-right:none;}
+    .ledger{justify-content:flex-start;}
+  }
 
-        .feature-card {
-            background-color: #ffffff;
-            padding: 2.5rem 2rem;
-            border-radius: 16px;
-            border-left: 6px solid #24B1B1;
-            box-shadow: 0 10px 25px rgba(0, 121, 121, 0.08);
-        }
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
 
-        .feature-card h3 {
-            font-size: 1.3rem;
-            color: #007979;
-            margin-bottom: 1rem;
-            font-weight: 700;
-        }
-
-        .feature-card p {
-            color: #4a5568;
-            font-size: 1rem;
-        }
-
-        .banner {
-            background-color: #007979;
-            color: #FFE2AF;
-            text-align: center;
-            padding: 4rem 8%;
-        }
-
-        .banner h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .banner p {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            color: #ffffff;
-        }
-
-        .footer {
-            background-color: #005a5a;
-            color: #FFE2AF;
-            text-align: center;
-            padding: 2rem;
-            font-size: 0.9rem;
-        }
-    </style>
+  :focus-visible{outline:2px solid var(--stamp);outline-offset:3px;}
+</style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="logo">ExpenseSnap</div>
-        <a href="#download" class="nav-btn">Get App</a>
+<header>
+  <div class="nav">
+    <div class="logo">Snap<span>tally</span></div>
+    <nav class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#cta">Get started</a>
     </nav>
+    <a class="nav-cta" href="#cta">Start tracking</a>
+  </div>
+</header>
 
-    <section class="hero">
-        <h1>Effortless Expense Tracking with Automated Receipt Scanning[cite: 1]</h1>
-        <p>Stop losing track of physical receipts or manually entering data[cite: 1]. Snap a photo of your bill, and let OCR technology record key spending details in seconds[cite: 1].</p>
-        <a href="#download" class="cta-btn">Start Tracking Free</a>
-    </section>
+<main>
+  <section class="hero">
+    <div class="hero-copy">
+      <h1>Every bill you photograph becomes a line you never have to type.</h1>
+      <p class="lede">Snaptally logs your spending two ways — type it in when you want control, or point your camera at a receipt and let it read the amount, the vendor, and the date for you.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="#cta">Start tracking free</a>
+        <a class="btn-secondary" href="#how">See how scanning works</a>
+      </div>
+      <p class="hero-note">No card required. Your receipts stay stored with every entry.</p>
+    </div>
 
-    <section class="features">
-        <div class="section-title">Designed for Seamless Budgeting</div>
-        <div class="features-grid">
-            <div class="feature-card">
-                <h3>Automated Receipt OCR</h3>
-                <p>Capture physical receipts via camera to extract amounts, dates, vendors, and categories automatically[cite: 1].</p>
-            </div>
-            <div class="feature-card">
-                <h3>Flexible Entry Control</h3>
-                <p>Log cash spending manually or review and correct extracted scan details anytime for total precision[cite: 1].</p>
-            </div>
-            <div class="feature-card">
-                <h3>Visual Spending Insights</h3>
-                <p>Monitor financial habits with daily, weekly, and monthly chart reports and custom category budget limits[cite: 1].</p>
-            </div>
-            <div class="feature-card">
-                <h3>Digital Receipt Vault</h3>
-                <p>Store scanned receipt photos alongside transaction histories to prevent lost records and ease future reference[cite: 1].</p>
-            </div>
+    <div class="receipt-stage">
+      <div class="receipt">
+        <div class="r-badge">SCANNED</div>
+        <div class="r-store">Café Himalaya</div>
+        <div class="r-sub">Kathmandu, Bagmati</div>
+        <div class="r-meta">04 SEP 2026 · 12:41</div>
+        <div class="r-items">
+          <div class="r-item"><span>Cappuccino x2</span><span>NPR 380</span></div>
+          <div class="r-item"><span>Cheese sandwich</span><span>NPR 320</span></div>
+          <div class="r-item"><span>Service</span><span>NPR 70</span></div>
         </div>
-    </section>
+        <div class="r-total"><span>Total</span><span>NPR 770</span></div>
+      </div>
+    </div>
+  </section>
 
-    <section class="banner">
-        <h2>Take Control of Your Personal Finances</h2>
-        <p>Combining complete manual flexibility with instant automated receipt capture in one sleek platform[cite: 1].</p>
-        <a href="#download" class="cta-btn">Download Now</a>
-    </section>
+  <section class="how" id="how">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">HOW IT WORKS</p>
+        <h2>Two ways in, one place to see it all</h2>
+        <p>Use whichever fits the moment — a quick manual entry at your desk, or a photo on your way out of a shop.</p>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="how-list">
+        <div class="how-item">
+          <div class="how-num">01</div>
+          <h3>Add it by hand</h3>
+          <p>Enter the amount, pick a category, add a note. Takes about ten seconds and gives you full control over the details.</p>
+        </div>
+        <div class="how-item">
+          <div class="how-num">02</div>
+          <h3>Or snap the receipt</h3>
+          <p>Photograph the bill. Snaptally reads the total, the vendor name, and the date straight off the paper.</p>
+        </div>
+        <div class="how-item">
+          <div class="how-num">03</div>
+          <h3>Check what it found</h3>
+          <p>Scanned details show up ready to save. Fix anything that looks off before it lands in your ledger.</p>
+        </div>
+        <div class="how-item">
+          <div class="how-num">04</div>
+          <h3>Watch the picture form</h3>
+          <p>Every entry, typed or scanned, feeds the same categories, charts, and budgets — no separate lists to reconcile.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <footer class="footer">
-        <p>&copy; 2026 ExpenseSnap. All rights reserved.</p>
-    </footer>
+  <section class="features" id="features">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">WHAT YOU GET</p>
+        <h2>Built around the receipt, not around forms</h2>
+      </div>
+    </div>
+    <div class="feature-grid">
+      <div class="feature">
+        <div class="feature-mark">＄</div>
+        <h4>Manual entry, kept fast</h4>
+        <p>Amount, category, date, payment method, and a note — nothing more than you need to log a purchase.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-mark">◎</div>
+        <h4>Camera-based bill capture</h4>
+        <p>Point, shoot, done. OCR pulls the vendor, total, and date so you're not retyping what's already printed.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-mark">▤</div>
+        <h4>Categories that sort themselves</h4>
+        <p>Expenses fall into food, transport, utilities, and more — automatically, or adjust them yourself.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-mark">〜</div>
+        <h4>Spending, visualised</h4>
+        <p>Daily, weekly, and monthly summaries show where the money actually went, not just how much left.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-mark">▢</div>
+        <h4>Every receipt, kept</h4>
+        <p>The original photo stays attached to its entry — useful for returns, reimbursements, or a memory jog.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-mark">◒</div>
+        <h4>Budgets with a nudge</h4>
+        <p>Set a limit per category and get a heads-up as you approach it, before you've already gone over.</p>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="ledger">
+        <div class="ledger-stat">
+          <div class="num">2 ways</div>
+          <div class="lbl">to log an expense</div>
+        </div>
+        <div class="ledger-stat">
+          <div class="num">&lt;10s</div>
+          <div class="lbl">to capture a bill by camera</div>
+        </div>
+        <div class="ledger-stat">
+          <div class="num">100%</div>
+          <div class="lbl">of receipts kept with their entry</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-band" id="cta">
+    <p class="kicker" style="text-align:center;">GET STARTED</p>
+    <h2>Start with your next receipt</h2>
+    <p>Add it by hand or snap a photo — either way, it's logged in seconds and ready when you want to see the bigger picture.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="#">Start tracking free</a>
+      <a class="btn-secondary" href="#">Watch a 60-second demo</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div>Snaptally — expense tracking, manual or by camera.</div>
+    <div><a href="#how">How it works</a> &nbsp;·&nbsp; <a href="#features">Features</a> &nbsp;·&nbsp; <a href="#cta">Get started</a></div>
+  </div>
+</footer>
 
 </body>
 </html>
